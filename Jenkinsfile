@@ -16,11 +16,11 @@ node {
   }
 
   stage('Push image') {
-    GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+    shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
       app.push("${env.BUILD_NUMBER}")
-      app.push(GIT_COMMIT_HASH)
+      app.push(shortCommit)
       app.push("latest")
     }
   }
